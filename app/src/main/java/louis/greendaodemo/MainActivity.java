@@ -14,14 +14,12 @@ import java.util.List;
 import louis.greendaodemo.greendao.GreenDaoHelper;
 import louis.greendaodemo.greendao.entity.Area;
 import louis.greendaodemo.greendao.entity.SyncManager;
-import louis.greendaodemo.greendao.entity.User;
 import louis.greendaodemo.greendao.gen.AreaDao;
 import louis.greendaodemo.greendao.gen.SyncManagerDao;
-import louis.greendaodemo.greendao.gen.UserDao;
+import louis.greendaodemo.greendao.utils.Util;
 
 public class MainActivity extends AppCompatActivity {
 
-    private UserDao mUserDao;
     private AreaDao mAreaDao;
     private SyncManagerDao mSyncManagerDao;
 
@@ -41,22 +39,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         mAreaDao = GreenDaoHelper.getDaoSession().getAreaDao();
-        mUserDao = GreenDaoHelper.getDaoSession().getUserDao();
         mSyncManagerDao = GreenDaoHelper.getDaoSession().getSyncManagerDao();
 
-        initDataBase();
+//        initDataBase();
+        testDatabase();
 
         if (isInitDataBase()) {
             queryTest();
         }
 
-
     }
 
     private void initDataBase() {
-        if (isInitDataBase()) {
-            return;
-        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,19 +75,28 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("MainActivity", String.valueOf(mAreaDao.count()));
 
-                mUserDao.deleteAll();
-                User user1 = new User((long)1, "张三", 0);
-                mUserDao.insert(user1);
-                User user2 = new User((long)2, "张四", 0);
-                mUserDao.insert(user2);
-
                 queryTest();
 
-                SyncManager syncManager = new SyncManager("InitDataBase", true);
-                mSyncManagerDao.insert(syncManager);
+                Util.copyDataBaseToSD();
+
+
             }
         }).start();
 
+    }
+
+    private void testDatabase() {
+        if (isInitDataBase()) {
+            return;
+        }
+        try {
+            Util.copyDataBase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SyncManager syncManager = new SyncManager("InitDataBase", true);
+        mSyncManagerDao.insert(syncManager);
+        queryTest();
     }
 
     private boolean isInitDataBase() {
@@ -113,12 +117,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", area.getAttributionCN());
         }
 
-        User user = mUserDao.queryBuilder().where(UserDao.Properties.Name.eq("张三")).unique();
-        Log.d("MainActivity", user.getName());
-        List<User> userList = (List<User>) mUserDao.queryBuilder().where(UserDao.Properties.Name.like("张%")).build().list();
-        for (User usr:userList) {
-            Log.d("MainActivity", usr.getName());
-        }
     }
 
     public void readAssetsFileOnLine(String fileName, List<String> list) {

@@ -9,7 +9,6 @@ import louis.greendaodemo.greendao.entity.SyncManager;
 import louis.greendaodemo.greendao.gen.AreaDao;
 import louis.greendaodemo.greendao.gen.DaoMaster;
 import louis.greendaodemo.greendao.gen.SyncManagerDao;
-import louis.greendaodemo.greendao.gen.UserDao;
 
 /**
  * Created by louis on 2017/4/13.
@@ -23,6 +22,6 @@ public class GreenDaoOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        MigrationHelper.migrate(db,UserDao.class, AreaDao.class, SyncManagerDao.class);
+        MigrationHelper.migrate(db, AreaDao.class, SyncManagerDao.class);
     }
 }
