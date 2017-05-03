@@ -18,6 +18,7 @@ public class GreenDaoApplication extends Application {
 
         mContext = getApplicationContext();
         GreenDaoHelper.initDatabase();
+        GreenDaoHelper.initLocationDatabase();
 
     }
 }

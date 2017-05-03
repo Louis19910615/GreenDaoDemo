@@ -25,7 +25,7 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
      */
     public static class Properties {
         public final static Property Key = new Property(0, String.class, "Key", false, "KEY");
-        public final static Property Value = new Property(1, Boolean.class, "value", false, "VALUE");
+        public final static Property Value = new Property(1, String.class, "value", false, "VALUE");
     }
 
 
@@ -42,7 +42,7 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SYNC_MANAGER\" (" + //
                 "\"KEY\" TEXT UNIQUE ," + // 0: Key
-                "\"VALUE\" INTEGER);"); // 1: value
+                "\"VALUE\" TEXT);"); // 1: value
     }
 
     /** Drops the underlying database table. */
@@ -60,9 +60,9 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
             stmt.bindString(1, Key);
         }
  
-        Boolean value = entity.getValue();
+        String value = entity.getValue();
         if (value != null) {
-            stmt.bindLong(2, value ? 1L: 0L);
+            stmt.bindString(2, value);
         }
     }
 
@@ -75,9 +75,9 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
             stmt.bindString(1, Key);
         }
  
-        Boolean value = entity.getValue();
+        String value = entity.getValue();
         if (value != null) {
-            stmt.bindLong(2, value ? 1L: 0L);
+            stmt.bindString(2, value);
         }
     }
 
@@ -90,7 +90,7 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
     public SyncManager readEntity(Cursor cursor, int offset) {
         SyncManager entity = new SyncManager( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // Key
-            cursor.isNull(offset + 1) ? null : cursor.getShort(offset + 1) != 0 // value
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // value
         );
         return entity;
     }
@@ -98,7 +98,7 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
     @Override
     public void readEntity(Cursor cursor, SyncManager entity, int offset) {
         entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setValue(cursor.isNull(offset + 1) ? null : cursor.getShort(offset + 1) != 0);
+        entity.setValue(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
      }
     
     @Override

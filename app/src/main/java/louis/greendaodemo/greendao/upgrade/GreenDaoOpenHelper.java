@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 
-import louis.greendaodemo.greendao.entity.SyncManager;
 import louis.greendaodemo.greendao.gen.AreaDao;
 import louis.greendaodemo.greendao.gen.DaoMaster;
 import louis.greendaodemo.greendao.gen.SyncManagerDao;

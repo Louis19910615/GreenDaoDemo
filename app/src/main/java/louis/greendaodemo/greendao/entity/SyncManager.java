@@ -13,10 +13,10 @@ public class SyncManager {
     @Unique
     private String Key;
 
-    private Boolean value;
+    private String value;
 
-    @Generated(hash = 563950225)
-    public SyncManager(String Key, Boolean value) {
+    @Generated(hash = 2111415463)
+    public SyncManager(String Key, String value) {
         this.Key = Key;
         this.value = value;
     }
@@ -33,11 +33,12 @@ public class SyncManager {
         this.Key = Key;
     }
 
-    public Boolean getValue() {
+    public String getValue() {
         return this.value;
     }
 
-    public void setValue(Boolean value) {
+    public void setValue(String value) {
         this.value = value;
     }
+    
 }

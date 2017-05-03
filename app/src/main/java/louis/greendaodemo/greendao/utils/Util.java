@@ -27,8 +27,8 @@ public class Util {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             return ;
         }
-        File dbFile = GreenDaoApplication.mContext.getDatabasePath("lianluo-db");
-        File file  = new File(Environment.getExternalStorageDirectory(), "lianluo-db");
+        File dbFile = GreenDaoApplication.mContext.getDatabasePath("location-db");
+        File file  = new File(Environment.getExternalStorageDirectory(), "location-db");
         Log.d("Util", file.getAbsolutePath());
         FileChannel inChannel = null,outChannel = null;
 
@@ -66,12 +66,12 @@ public class Util {
 
         String packageName = GreenDaoApplication.mContext.getPackageName();
         String DATABASE_PATH = "/data/data/" + packageName + "/databases/";
-        String databaseFilenames = DATABASE_PATH + "lianluo-db";
+        String databaseFilenames = DATABASE_PATH + "location-db";
         File dir = new File(DATABASE_PATH);
         if (!dir.exists())// 判断文件夹是否存在，不存在就新建一个
             dir.mkdir();
         FileOutputStream os = new FileOutputStream(databaseFilenames);// 得到数据库文件的写入流
-        InputStream is = GreenDaoApplication.mContext.getResources().openRawResource(R.raw.lianluodb);
+        InputStream is = GreenDaoApplication.mContext.getResources().openRawResource(R.raw.location);
         byte[] buffer = new byte[8192];
         int count = 0;
         while ((count = is.read(buffer)) > 0) {

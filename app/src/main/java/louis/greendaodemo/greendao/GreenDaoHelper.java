@@ -17,6 +17,11 @@ public class GreenDaoHelper {
     private static DaoMaster mDaoMaster;
     private static DaoSession mDaoSession;
 
+    private static GreenDaoOpenHelper mLocationHelper;
+    private static SQLiteDatabase locationDb;
+    private static DaoMaster mLocationDaoMaster;
+    private static DaoSession mLocationDaoSession;
+
     /**
      * 初始化greenDao，这个操作建议在Application初始化的时候添加；
      */
@@ -27,10 +32,22 @@ public class GreenDaoHelper {
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
     }
+    public static void initLocationDatabase() {
+        mLocationHelper = new GreenDaoOpenHelper(GreenDaoApplication.mContext, "location-db", null);
+        locationDb = mLocationHelper.getWritableDatabase();
+        mLocationDaoMaster = new DaoMaster(locationDb);
+        mLocationDaoSession = mLocationDaoMaster.newSession();
+    }
     public static DaoSession getDaoSession() {
         return mDaoSession;
     }
+    public static DaoSession getLocationDaoSession() {
+        return mLocationDaoSession;
+    }
     public static SQLiteDatabase getDb() {
         return db;
+    }
+    public static SQLiteDatabase getLocationDb() {
+        return locationDb;
     }
 }

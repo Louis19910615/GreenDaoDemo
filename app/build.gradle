@@ -35,4 +35,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'org.greenrobot:greendao:3.2.0'//GreenDao
     compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.3.0'
+
+    compile 'com.belerweb:pinyin4j:2.5.0'
 }

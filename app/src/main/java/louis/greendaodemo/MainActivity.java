@@ -16,19 +16,22 @@ import louis.greendaodemo.greendao.entity.Area;
 import louis.greendaodemo.greendao.entity.SyncManager;
 import louis.greendaodemo.greendao.gen.AreaDao;
 import louis.greendaodemo.greendao.gen.SyncManagerDao;
+import louis.greendaodemo.greendao.utils.Cn2Spell;
 import louis.greendaodemo.greendao.utils.Util;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AreaDao mAreaDao;
-    private SyncManagerDao mSyncManagerDao;
+    private AreaDao mLocationAreaDao;
+    private SyncManagerDao mLocationSyncManagerDao;
 
     private List<String> areaId = new ArrayList<String>();
     private List<String> areaNameCN = new ArrayList<String>();
     private List<String> areaNameEN = new ArrayList<String>();
-    private List<String> country = new ArrayList<String>();
-    private List<String> attributionCN = new ArrayList<String>();
-    private List<String> attributionEN = new ArrayList<String>();
+    private List<String> countryCode = new ArrayList<String>();
+    private List<String> attributionCNOne = new ArrayList<String>();
+    private List<String> attributionENOne = new ArrayList<String>();
+    private List<String> attributionCNTwo = new ArrayList<String>();
+    private List<String> attributionENTwo = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mAreaDao = GreenDaoHelper.getDaoSession().getAreaDao();
-        mSyncManagerDao = GreenDaoHelper.getDaoSession().getSyncManagerDao();
+
+        mLocationAreaDao = GreenDaoHelper.getLocationDaoSession().getAreaDao();
+        mLocationSyncManagerDao = GreenDaoHelper.getLocationDaoSession().getSyncManagerDao();
 
 //        initDataBase();
         testDatabase();
@@ -55,25 +59,41 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                readAssetsFileOnLine("cityId", areaId);
+                readAssetsFileOnLine("areaId",areaId);
                 readAssetsFileOnLine("areaNameCN",areaNameCN);
                 readAssetsFileOnLine("areaNameEN",areaNameEN);
-                readAssetsFileOnLine("country",country);
-                readAssetsFileOnLine("attributionCN",attributionCN);
-                readAssetsFileOnLine("attributionEN",attributionEN);
+                readAssetsFileOnLine("countryCode",countryCode);
+                readAssetsFileOnLine("attributionCNOne",attributionCNOne);
+                readAssetsFileOnLine("attributionENOne",attributionENOne);
+                readAssetsFileOnLine("attributionCNTwo",attributionCNTwo);
+                readAssetsFileOnLine("attributionENTwo",attributionENTwo);
 
-//        for(String str : areaNameCN) {
-//            Log.d("MainActivity", str);
-//        }
 
-                mAreaDao.deleteAll();
-                for (int i = 0; i < areaId.size(); i++) {
-                    Area area = new Area(areaId.get(i), areaNameCN.get(i), areaNameEN.get(i), country.get(i), attributionCN.get(i), attributionEN.get(i));
-                    mAreaDao.insert(area);
+                mLocationAreaDao.deleteAll();
+                String attributionCNOneStr;
+                String attributionENOneStr;
+                String attributionCNTwoStr;
+                String attributionENTwoStr;
+                for (int i = 0; i < areaNameCN.size(); i++) {
+                    if (attributionCNTwo.size() > i && attributionCNTwo.get(i) != null && attributionCNTwo.get(i).length() > 0 && !attributionCNTwo.get(i).equals(areaNameCN.get(i)) ) {
+//                        Log.d("MainActivity", "attributionCNTwo" + attributionCNTwo.get(i) + String.valueOf(i));
+                        attributionCNOneStr = null;
+                        attributionENOneStr = null;
+                        attributionCNTwoStr = attributionCNTwo.get(i);
+                        attributionENTwoStr = attributionENTwo.get(i);
+                    } else {
+//                        Log.d("MainActivity", "attributionCNOne" + attributionCNOne.get(i));
+                        attributionCNOneStr = attributionCNOne.get(i);
+                        attributionENOneStr = attributionENOne.get(i);
+                        attributionCNTwoStr = null;
+                        attributionENTwoStr = null;
+                    }
+                    Log.d("MainActivity", Cn2Spell.getPinYinHeadChar(areaNameCN.get(i)).toUpperCase() + String.valueOf(i));
+                    Area area = new Area(areaId.get(i), areaNameCN.get(i), areaNameEN.get(i), Cn2Spell.getPinYinHeadChar(areaNameCN.get(i)).toUpperCase(), countryCode.get(i), attributionCNOneStr, attributionENOneStr, attributionCNTwoStr, attributionENTwoStr);
+                    mLocationAreaDao.insert(area);
                 }
 
-
-                Log.d("MainActivity", String.valueOf(mAreaDao.count()));
+                Log.d("MainActivity", String.valueOf(mLocationAreaDao.count()));
 
                 queryTest();
 
@@ -94,14 +114,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        SyncManager syncManager = new SyncManager("InitDataBase", true);
-        mSyncManagerDao.insert(syncManager);
+        SyncManager syncManager = new SyncManager("InitDataBase", "1.1");
+        mLocationSyncManagerDao.insert(syncManager);
         queryTest();
     }
 
     private boolean isInitDataBase() {
-        SyncManager syncManager = mSyncManagerDao.queryBuilder().where(SyncManagerDao.Properties.Key.eq("InitDataBase")).unique();
-        if (syncManager != null && syncManager.getValue()) {
+        SyncManager syncManager = mLocationSyncManagerDao.queryBuilder().where(SyncManagerDao.Properties.Key.eq("InitDataBase")).unique();
+        if (syncManager != null && "1.1".equals(syncManager.getValue())) {
             return true;
         }
 
@@ -111,10 +131,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void queryTest() {
 
-        List<Area> areaList = (List<Area>) mAreaDao.queryBuilder().where(AreaDao.Properties.AreaNameCN.like("朝阳%")).build().list();
-        for (Area area:areaList) {
+
+        List<Area> areaList2 = (List<Area>) mLocationAreaDao.queryBuilder().where(AreaDao.Properties.AreaNameCN.like("朝阳%")).build().list();
+        for (Area area:areaList2) {
             Log.d("MainActivity", area.getAreaNameCN());
-            Log.d("MainActivity", area.getAttributionCN());
+            Log.d("MainActivity", "" + area.getAttributionCNOne());
+            Log.d("MainActivity", "" + area.getAttributionCNTwo());
+            Log.d("MainActivity", "" + area.getAreaId());
+        }
+
+        List<Area> areaList1 = (List<Area>) mLocationAreaDao.queryBuilder().where(AreaDao.Properties.AreaNameShorter.like("CY%")).build().list();
+        for (Area area:areaList1) {
+            Log.d("MainActivity", area.getAreaNameCN());
+            Log.d("MainActivity", "" + area.getAttributionCNOne());
+            Log.d("MainActivity", "" + area.getAttributionCNTwo());
+            Log.d("MainActivity", "" + area.getAreaId());
         }
 
     }
