@@ -12,6 +12,7 @@ import louis.greendaodemo.greendao.upgrade.GreenDaoOpenHelper;
  */
 
 public class GreenDaoHelper {
+    public static final String DB_VERSION = "1.5";
     private static GreenDaoOpenHelper mHelper;
     private static SQLiteDatabase db;
     private static DaoMaster mDaoMaster;

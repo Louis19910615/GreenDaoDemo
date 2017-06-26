@@ -10,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class SyncManager {
-    @Unique
+
     private String Key;
 
     private String value;
@@ -40,5 +40,6 @@ public class SyncManager {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
+   
 }

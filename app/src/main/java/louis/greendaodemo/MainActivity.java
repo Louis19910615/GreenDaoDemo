@@ -22,16 +22,19 @@ import louis.greendaodemo.greendao.utils.Util;
 public class MainActivity extends AppCompatActivity {
 
     private AreaDao mLocationAreaDao;
-    private SyncManagerDao mLocationSyncManagerDao;
+    private SyncManagerDao mSyncManagerDao;
 
     private List<String> areaId = new ArrayList<String>();
     private List<String> areaNameCN = new ArrayList<String>();
     private List<String> areaNameEN = new ArrayList<String>();
-    private List<String> countryCode = new ArrayList<String>();
+//    private List<String> countryCode = new ArrayList<String>();
     private List<String> attributionCNOne = new ArrayList<String>();
-    private List<String> attributionENOne = new ArrayList<String>();
+//    private List<String> attributionENOne = new ArrayList<String>();
     private List<String> attributionCNTwo = new ArrayList<String>();
-    private List<String> attributionENTwo = new ArrayList<String>();
+//    private List<String> attributionENTwo = new ArrayList<String>();
+    private List<String> areaProperty = new ArrayList<String>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +45,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
 
+        GreenDaoHelper.initDatabase();
+        mSyncManagerDao = GreenDaoHelper.getDaoSession().getSyncManagerDao();
+
+//        forceUpdateDB();
+
+        GreenDaoHelper.initLocationDatabase();
         mLocationAreaDao = GreenDaoHelper.getLocationDaoSession().getAreaDao();
-        mLocationSyncManagerDao = GreenDaoHelper.getLocationDaoSession().getSyncManagerDao();
+        initDataBase();
 
-//        initDataBase();
-        testDatabase();
 
-        if (isInitDataBase()) {
+    }
+
+    private void forceUpdateDB() {
+        if (isInitDataBase(GreenDaoHelper.DB_VERSION)) {
+            Log.d("MainActivity", "init database.");
+            GreenDaoHelper.initLocationDatabase();
+            mLocationAreaDao = GreenDaoHelper.getLocationDaoSession().getAreaDao();
+
             queryTest();
-        }
+        } else {
+            Log.d("MainActivity", "uninit database.");
 
+            forceSubstitute();
+
+        }
     }
 
     private void initDataBase() {
@@ -62,34 +80,43 @@ public class MainActivity extends AppCompatActivity {
                 readAssetsFileOnLine("areaId",areaId);
                 readAssetsFileOnLine("areaNameCN",areaNameCN);
                 readAssetsFileOnLine("areaNameEN",areaNameEN);
-                readAssetsFileOnLine("countryCode",countryCode);
+//                readAssetsFileOnLine("countryCode",countryCode);
                 readAssetsFileOnLine("attributionCNOne",attributionCNOne);
-                readAssetsFileOnLine("attributionENOne",attributionENOne);
+//                readAssetsFileOnLine("attributionENOne",attributionENOne);
                 readAssetsFileOnLine("attributionCNTwo",attributionCNTwo);
-                readAssetsFileOnLine("attributionENTwo",attributionENTwo);
+//                readAssetsFileOnLine("attributionENTwo",attributionENTwo);
+                readAssetsFileOnLine("areaProperty",areaProperty);
 
 
                 mLocationAreaDao.deleteAll();
-                String attributionCNOneStr;
-                String attributionENOneStr;
-                String attributionCNTwoStr;
-                String attributionENTwoStr;
+//                String attributionCNOneStr;
+//                String attributionENOneStr;
+//                String attributionCNTwoStr;
+//                String attributionENTwoStr;
                 for (int i = 0; i < areaNameCN.size(); i++) {
-                    if (attributionCNTwo.size() > i && attributionCNTwo.get(i) != null && attributionCNTwo.get(i).length() > 0 && !attributionCNTwo.get(i).equals(areaNameCN.get(i)) ) {
-//                        Log.d("MainActivity", "attributionCNTwo" + attributionCNTwo.get(i) + String.valueOf(i));
-                        attributionCNOneStr = null;
-                        attributionENOneStr = null;
-                        attributionCNTwoStr = attributionCNTwo.get(i);
-                        attributionENTwoStr = attributionENTwo.get(i);
-                    } else {
-//                        Log.d("MainActivity", "attributionCNOne" + attributionCNOne.get(i));
-                        attributionCNOneStr = attributionCNOne.get(i);
-                        attributionENOneStr = attributionENOne.get(i);
-                        attributionCNTwoStr = null;
-                        attributionENTwoStr = null;
-                    }
+//                    if (attributionCNTwo.size() > i && attributionCNTwo.get(i) != null && attributionCNTwo.get(i).length() > 0 && !attributionCNTwo.get(i).equals(areaNameCN.get(i)) ) {
+////                        Log.d("MainActivity", "attributionCNTwo" + attributionCNTwo.get(i) + String.valueOf(i));
+//                        attributionCNOneStr = null;
+//                        attributionENOneStr = null;
+//                        attributionCNTwoStr = attributionCNTwo.get(i);
+//                        attributionENTwoStr = attributionENTwo.get(i);
+//                    } else {
+////                        Log.d("MainActivity", "attributionCNOne" + attributionCNOne.get(i));
+//                        attributionCNOneStr = attributionCNOne.get(i);
+//                        attributionENOneStr = attributionENOne.get(i);
+//                        attributionCNTwoStr = null;
+//                        attributionENTwoStr = null;
+//                    }
                     Log.d("MainActivity", Cn2Spell.getPinYinHeadChar(areaNameCN.get(i)).toUpperCase() + String.valueOf(i));
-                    Area area = new Area(areaId.get(i), areaNameCN.get(i), areaNameEN.get(i), Cn2Spell.getPinYinHeadChar(areaNameCN.get(i)).toUpperCase(), countryCode.get(i), attributionCNOneStr, attributionENOneStr, attributionCNTwoStr, attributionENTwoStr);
+                    String attributionCNOneStr = null;
+                    if (areaProperty.get(i).equals("中国其他")) {
+                        if (attributionCNOne.get(i) != null && attributionCNOne.get(i).length() > 0) {
+                            attributionCNOneStr = attributionCNOne.get(i);
+                        } else {
+                            attributionCNOneStr = attributionCNTwo.get(i);
+                        }
+                    }
+                    Area area = new Area(areaId.get(i), areaNameCN.get(i), areaNameEN.get(i), Cn2Spell.getPinYinHeadChar(areaNameCN.get(i)).toUpperCase(), attributionCNOneStr);
                     mLocationAreaDao.insert(area);
                 }
 
@@ -105,38 +132,72 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void testDatabase() {
-        if (isInitDataBase()) {
-            return;
-        }
-        try {
-            Util.copyDataBase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        SyncManager syncManager = new SyncManager("InitDataBase", "1.1");
-        mLocationSyncManagerDao.insert(syncManager);
-        queryTest();
+//    private void testDatabase() {
+//        if (isInitDataBase(GreenDaoHelper.DB_VERSION)) {
+//            return;
+//        }
+//        try {
+//            Util.copyDataBase();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        SyncManager syncManager = new SyncManager("InitDataBase", "1.2");
+//        mLocationSyncManagerDao.insert(syncManager);
+//        queryTest();
+//    }
+
+    private void forceSubstitute() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Util.copyDataBase();
+                    setInitDataBase(GreenDaoHelper.DB_VERSION);
+
+                    GreenDaoHelper.initLocationDatabase();
+                    mLocationAreaDao = GreenDaoHelper.getLocationDaoSession().getAreaDao();
+                    queryTest();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
-    private boolean isInitDataBase() {
-        SyncManager syncManager = mLocationSyncManagerDao.queryBuilder().where(SyncManagerDao.Properties.Key.eq("InitDataBase")).unique();
-        if (syncManager != null && "1.1".equals(syncManager.getValue())) {
+    private boolean isInitDataBase(String version) {
+        SyncManager syncManager = mSyncManagerDao.queryBuilder().where(SyncManagerDao.Properties.Key.eq("InitDataBase")).unique();
+        if (syncManager != null && version.equals(syncManager.getValue())) {
             return true;
         }
-
 
         return false;
     }
 
-    private void queryTest() {
+    private void setInitDataBase(String version) {
+        SyncManager syncManager = mSyncManagerDao.queryBuilder().where(SyncManagerDao.Properties.Key.eq("InitDataBase")).unique();
 
+        if (syncManager == null) {
+            syncManager = new SyncManager("InitDataBase", version);
+            mSyncManagerDao.insert(syncManager);
+        } else {
+            if (version.equals(syncManager.getValue())){
+                return;
+            } else {
+                mSyncManagerDao.deleteAll();
+                SyncManager syncMangerNew = new SyncManager("InitDataBase", version);
+                mSyncManagerDao.insert(syncMangerNew);
+            }
+        }
+    }
+
+    private void queryTest() {
 
         List<Area> areaList2 = (List<Area>) mLocationAreaDao.queryBuilder().where(AreaDao.Properties.AreaNameCN.like("朝阳%")).build().list();
         for (Area area:areaList2) {
             Log.d("MainActivity", area.getAreaNameCN());
             Log.d("MainActivity", "" + area.getAttributionCNOne());
-            Log.d("MainActivity", "" + area.getAttributionCNTwo());
+//            Log.d("MainActivity", "" + area.getAttributionCNTwo());
             Log.d("MainActivity", "" + area.getAreaId());
         }
 
@@ -144,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         for (Area area:areaList1) {
             Log.d("MainActivity", area.getAreaNameCN());
             Log.d("MainActivity", "" + area.getAttributionCNOne());
-            Log.d("MainActivity", "" + area.getAttributionCNTwo());
+//            Log.d("MainActivity", "" + area.getAttributionCNTwo());
             Log.d("MainActivity", "" + area.getAreaId());
         }
 

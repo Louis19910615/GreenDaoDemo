@@ -41,7 +41,7 @@ public class SyncManagerDao extends AbstractDao<SyncManager, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SYNC_MANAGER\" (" + //
-                "\"KEY\" TEXT UNIQUE ," + // 0: Key
+                "\"KEY\" TEXT," + // 0: Key
                 "\"VALUE\" TEXT);"); // 1: value
     }
 

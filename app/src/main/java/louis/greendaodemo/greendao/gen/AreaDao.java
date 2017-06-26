@@ -28,11 +28,7 @@ public class AreaDao extends AbstractDao<Area, Void> {
         public final static Property AreaNameCN = new Property(1, String.class, "areaNameCN", false, "AREA_NAME_CN");
         public final static Property AreaNameEN = new Property(2, String.class, "areaNameEN", false, "AREA_NAME_EN");
         public final static Property AreaNameShorter = new Property(3, String.class, "areaNameShorter", false, "AREA_NAME_SHORTER");
-        public final static Property CountryCode = new Property(4, String.class, "countryCode", false, "COUNTRY_CODE");
-        public final static Property AttributionCNOne = new Property(5, String.class, "attributionCNOne", false, "ATTRIBUTION_CNONE");
-        public final static Property AttributionENOne = new Property(6, String.class, "attributionENOne", false, "ATTRIBUTION_ENONE");
-        public final static Property AttributionCNTwo = new Property(7, String.class, "attributionCNTwo", false, "ATTRIBUTION_CNTWO");
-        public final static Property AttributionENTwo = new Property(8, String.class, "attributionENTwo", false, "ATTRIBUTION_ENTWO");
+        public final static Property AttributionCNOne = new Property(4, String.class, "attributionCNOne", false, "ATTRIBUTION_CNONE");
     }
 
 
@@ -52,11 +48,7 @@ public class AreaDao extends AbstractDao<Area, Void> {
                 "\"AREA_NAME_CN\" TEXT," + // 1: areaNameCN
                 "\"AREA_NAME_EN\" TEXT," + // 2: areaNameEN
                 "\"AREA_NAME_SHORTER\" TEXT," + // 3: areaNameShorter
-                "\"COUNTRY_CODE\" TEXT," + // 4: countryCode
-                "\"ATTRIBUTION_CNONE\" TEXT," + // 5: attributionCNOne
-                "\"ATTRIBUTION_ENONE\" TEXT," + // 6: attributionENOne
-                "\"ATTRIBUTION_CNTWO\" TEXT," + // 7: attributionCNTwo
-                "\"ATTRIBUTION_ENTWO\" TEXT);"); // 8: attributionENTwo
+                "\"ATTRIBUTION_CNONE\" TEXT);"); // 4: attributionCNOne
     }
 
     /** Drops the underlying database table. */
@@ -89,29 +81,9 @@ public class AreaDao extends AbstractDao<Area, Void> {
             stmt.bindString(4, areaNameShorter);
         }
  
-        String countryCode = entity.getCountryCode();
-        if (countryCode != null) {
-            stmt.bindString(5, countryCode);
-        }
- 
         String attributionCNOne = entity.getAttributionCNOne();
         if (attributionCNOne != null) {
-            stmt.bindString(6, attributionCNOne);
-        }
- 
-        String attributionENOne = entity.getAttributionENOne();
-        if (attributionENOne != null) {
-            stmt.bindString(7, attributionENOne);
-        }
- 
-        String attributionCNTwo = entity.getAttributionCNTwo();
-        if (attributionCNTwo != null) {
-            stmt.bindString(8, attributionCNTwo);
-        }
- 
-        String attributionENTwo = entity.getAttributionENTwo();
-        if (attributionENTwo != null) {
-            stmt.bindString(9, attributionENTwo);
+            stmt.bindString(5, attributionCNOne);
         }
     }
 
@@ -139,29 +111,9 @@ public class AreaDao extends AbstractDao<Area, Void> {
             stmt.bindString(4, areaNameShorter);
         }
  
-        String countryCode = entity.getCountryCode();
-        if (countryCode != null) {
-            stmt.bindString(5, countryCode);
-        }
- 
         String attributionCNOne = entity.getAttributionCNOne();
         if (attributionCNOne != null) {
-            stmt.bindString(6, attributionCNOne);
-        }
- 
-        String attributionENOne = entity.getAttributionENOne();
-        if (attributionENOne != null) {
-            stmt.bindString(7, attributionENOne);
-        }
- 
-        String attributionCNTwo = entity.getAttributionCNTwo();
-        if (attributionCNTwo != null) {
-            stmt.bindString(8, attributionCNTwo);
-        }
- 
-        String attributionENTwo = entity.getAttributionENTwo();
-        if (attributionENTwo != null) {
-            stmt.bindString(9, attributionENTwo);
+            stmt.bindString(5, attributionCNOne);
         }
     }
 
@@ -177,11 +129,7 @@ public class AreaDao extends AbstractDao<Area, Void> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // areaNameCN
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // areaNameEN
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // areaNameShorter
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // countryCode
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // attributionCNOne
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // attributionENOne
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // attributionCNTwo
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // attributionENTwo
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // attributionCNOne
         );
         return entity;
     }
@@ -192,11 +140,7 @@ public class AreaDao extends AbstractDao<Area, Void> {
         entity.setAreaNameCN(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAreaNameEN(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setAreaNameShorter(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setCountryCode(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAttributionCNOne(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setAttributionENOne(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setAttributionCNTwo(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setAttributionENTwo(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setAttributionCNOne(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     @Override
